@@ -24,6 +24,7 @@ interface SplitBillRepository {
 
     // Expense operations
     fun getExpensesByGroupId(groupId: Long): Flow<List<ExpenseDetail>>
+    fun getAllExpenses(): Flow<List<ExpenseDetail>>
     suspend fun addExpenseWithSplits(
         groupId: Long,
         title: String,

@@ -6,6 +6,7 @@ import com.example.splitbill.data.local.dao.MemberDao
 import com.example.splitbill.data.local.entity.ExpenseEntity
 import com.example.splitbill.data.local.entity.GroupEntity
 import com.example.splitbill.data.local.entity.MemberEntity
+import com.example.splitbill.data.local.entity.ExpenseSplitEntity
 import com.example.splitbill.data.model.DebtSettlement
 import com.example.splitbill.data.model.ExpenseDetail
 import com.example.splitbill.data.model.GroupSummary
@@ -73,6 +74,25 @@ class SplitBillRepositoryImpl(
             val memberMap = members.associateBy { it.id }
             val splitMap = splits.groupBy { it.expenseId }
             expenses.map { expense ->
+                val payerName = memberMap[expense.payerMemberId]?.name ?: "Thành viên đã xóa"
+                ExpenseDetail(
+                    expense = expense,
+                    payerName = payerName,
+                    splits = splitMap[expense.id] ?: emptyList()
+                )
+            }
+        }
+    }
+
+    override fun getAllExpenses(): Flow<List<ExpenseDetail>> {
+        return combine(
+            expenseDao.getAllExpenses(),
+            memberDao.getAllMembersFlow(),
+            expenseDao.getAllSplitsFlow()
+        ) { allExpenses, allMembers, allSplits ->
+            val memberMap = allMembers.associateBy { it.id }
+            val splitMap = allSplits.groupBy { it.expenseId }
+            allExpenses.map { expense ->
                 val payerName = memberMap[expense.payerMemberId]?.name ?: "Thành viên đã xóa"
                 ExpenseDetail(
                     expense = expense,

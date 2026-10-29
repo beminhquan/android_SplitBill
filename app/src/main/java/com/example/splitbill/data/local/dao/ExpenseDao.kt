@@ -15,6 +15,9 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses WHERE groupId = :groupId ORDER BY date DESC")
     fun getExpensesByGroupId(groupId: Long): Flow<List<ExpenseEntity>>
 
+    @Query("SELECT * FROM expenses ORDER BY date DESC")
+    fun getAllExpenses(): Flow<List<ExpenseEntity>>
+
     @Query("SELECT * FROM expenses WHERE groupId = :groupId ORDER BY date DESC")
     suspend fun getExpensesByGroupIdSync(groupId: Long): List<ExpenseEntity>
 
@@ -35,6 +38,9 @@ interface ExpenseDao {
 
     @Query("SELECT es.* FROM expense_splits es INNER JOIN expenses e ON es.expenseId = e.id WHERE e.groupId = :groupId")
     fun getSplitsByGroupIdFlow(groupId: Long): Flow<List<ExpenseSplitEntity>>
+
+    @Query("SELECT * FROM expense_splits")
+    fun getAllSplitsFlow(): Flow<List<ExpenseSplitEntity>>
 
     @Query("SELECT es.* FROM expense_splits es INNER JOIN expenses e ON es.expenseId = e.id WHERE e.groupId = :groupId")
     suspend fun getAllSplitsByGroupId(groupId: Long): List<ExpenseSplitEntity>

@@ -19,6 +19,9 @@ interface MemberDao {
     @Query("SELECT * FROM members WHERE id = :memberId LIMIT 1")
     suspend fun getMemberById(memberId: Long): MemberEntity?
 
+    @Query("SELECT * FROM members")
+    fun getAllMembersFlow(): Flow<List<MemberEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: MemberEntity): Long
 
